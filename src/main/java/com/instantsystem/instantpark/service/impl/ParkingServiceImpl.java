@@ -5,8 +5,9 @@ import com.instantsystem.instantpark.exception.ParkingDataException;
 import com.instantsystem.instantpark.model.ParkingAvailability;
 import com.instantsystem.instantpark.model.ParkingInfo;
 import com.instantsystem.instantpark.service.ParkingService;
+import com.instantsystem.instantpark.util.LoggingUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@CommonsLog
 public class ParkingServiceImpl implements ParkingService {
 
     private final RestTemplate restTemplate;
@@ -39,6 +40,7 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public ParkingInfo getParkingById(String parkingId) {
+        log.info(LoggingUtils.getMessage(parkingId));
         List<ParkingInfo> parkingInfos = getAllParkings();
         return parkingInfos.stream()
                 .filter(parkingInfo -> parkingInfo.getId().equals(parkingId))
@@ -48,6 +50,7 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public List<ParkingInfo> getNearbyParkings(Double latitude, Double longitude) {
+        log.info(LoggingUtils.getMessage(latitude, longitude));
         List<ParkingInfo> parkingInfos = getAllParkings();
         List<ParkingAvailability> parkingAvailabilities = getAllParkingsAvailabilities();
 
@@ -67,6 +70,29 @@ public class ParkingServiceImpl implements ParkingService {
         }
 
         return new ArrayList<>(parkingInfoByDistance.values());
+    }
+
+    @Override
+    public List<ParkingInfo> getParkingsByName(String name) {
+        log.info(LoggingUtils.getMessage(name));
+        List<ParkingInfo> parkingInfos = getAllParkings();
+        return parkingInfos.stream()
+                .filter(parkingInfo -> parkingInfo.getParkingName().contains(name.toUpperCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ParkingAvailability getParkingAvailability(String parkingName) {
+        log.info(LoggingUtils.getMessage(parkingName));
+        ResponseEntity<ParkingAvailabilityDTO> response = restTemplate.getForEntity(parkingAvailabilityApiUrl, ParkingAvailabilityDTO.class);
+
+        AvailabilityParkingFieldsDTO fields = Objects.requireNonNull(response.getBody()).getRecords().stream()
+                .map(AvailabilityRecordDTO::getFields)
+                .filter(f -> f.getParkingName().equals(parkingName))
+                .findFirst()
+                .orElseThrow(() -> new ParkingDataException("Parking availability not found"));
+
+        return convertToParkingAvailability(fields);
     }
 
     private boolean isParkingAvailable(String parkingName, List<ParkingAvailability> parkingAvailabilities) {
@@ -96,27 +122,6 @@ public class ParkingServiceImpl implements ParkingService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
-    }
-
-    @Override
-    public List<ParkingInfo> getParkingsByName(String name) {
-        List<ParkingInfo> parkingInfos = getAllParkings();
-        return parkingInfos.stream()
-                .filter(parkingInfo -> parkingInfo.getParkingName().contains(name.toUpperCase()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public ParkingAvailability getParkingAvailability(String parkingName) {
-        ResponseEntity<ParkingAvailabilityDTO> response = restTemplate.getForEntity(parkingAvailabilityApiUrl, ParkingAvailabilityDTO.class);
-
-        AvailabilityParkingFieldsDTO fields = Objects.requireNonNull(response.getBody()).getRecords().stream()
-                .map(AvailabilityRecordDTO::getFields)
-                .filter(f -> f.getParkingName().equals(parkingName))
-                .findFirst()
-                .orElseThrow(() -> new ParkingDataException("Parking availability not found"));
-
-        return convertToParkingAvailability(fields);
     }
 
     private List<ParkingAvailability> getAllParkingsAvailabilities() {

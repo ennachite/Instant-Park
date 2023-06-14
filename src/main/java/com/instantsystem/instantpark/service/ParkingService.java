@@ -8,6 +8,13 @@ import java.util.List;
 
 @Service
 public interface ParkingService {
-    List<ParkingInfo> getParkingInfo();
-    List<ParkingAvailability> getParkingAvailability();
+    List<ParkingInfo> getAllParkings();
+
+    ParkingInfo getParkingById(String parkingId);
+
+    List<ParkingInfo> getNearbyParkings(Double latitude, Double longitude);
+
+    List<ParkingInfo> getParkingsByName(String name);
+
+    ParkingAvailability getParkingAvailability(String parkingId);
 }

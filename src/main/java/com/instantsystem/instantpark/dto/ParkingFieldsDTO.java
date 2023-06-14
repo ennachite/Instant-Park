@@ -1,16 +1,14 @@
-package com.instantsystem.instantpark.model;
+package com.instantsystem.instantpark.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParkingInfo {
+public class ParkingFieldsDTO {
     @JsonProperty("id")
     private String id;
 
@@ -31,7 +29,4 @@ public class ParkingInfo {
 
     @JsonProperty("tarif_1h")
     private String tarif1h;
-
-    @JsonProperty("distance")
-    private Double distance;
 }

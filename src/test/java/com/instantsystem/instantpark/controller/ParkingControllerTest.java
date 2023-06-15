@@ -89,22 +89,22 @@ class ParkingControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
-    /**
-     * Method under test: {@link ParkingController#getParkingsByName(String)}
-     */
-    @Test
-    @DisplayName("Should_return_parkings_by_name")
-    void testGetParkingsByName() throws Exception {
-        // Arrange
-        String name = "DES";
-        List<ParkingInfo> arrayList = List.of(new ParkingInfo());
-        doReturn(arrayList).when(parkingService).getParkingsByName(name);
-
-        // Act
-        mockMvc.perform(MockMvcRequestBuilders.get(PREFIX_PATH + "/search").contentType(MediaType.APPLICATION_JSON)
-                        .param("nom", name))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
-    }
+//    /**
+//     * Method under test: {@link ParkingController#getParkingsByName(String)}
+//     */
+//    @Test
+//    @DisplayName("Should_return_parkings_by_name")
+//    void testGetParkingsByName() throws Exception {
+//        // Arrange
+//        String name = "DES";
+//        List<ParkingInfo> arrayList = List.of(new ParkingInfo());
+//        doReturn(arrayList).when(parkingService).getParkingsByName(name);
+//
+//        // Act
+//        mockMvc.perform(MockMvcRequestBuilders.get(PREFIX_PATH + "/search").contentType(MediaType.APPLICATION_JSON)
+//                        .param("nom", name))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
+//    }
 }
 

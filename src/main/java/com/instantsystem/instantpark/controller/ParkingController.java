@@ -20,6 +20,7 @@ public class ParkingController {
 
     /**
      * Returns a list of all parkings
+     *
      * @return ResponseEntity with list of ParkingInfo
      */
     @GetMapping
@@ -32,6 +33,7 @@ public class ParkingController {
 
     /**
      * Returns a specific parking by its id
+     *
      * @param parkingId the id of the parking
      * @return ResponseEntity with ParkingInfo
      */
@@ -45,7 +47,8 @@ public class ParkingController {
 
     /**
      * Returns a list of nearby available parkings based on the provided latitude and longitude
-     * @param latitude of the current location
+     *
+     * @param latitude  of the current location
      * @param longitude of the current location
      * @return ResponseEntity with list of nearby ParkingInfo + distance (in meters)
      */
@@ -62,6 +65,7 @@ public class ParkingController {
 
     /**
      * Returns a list of parkings by their names
+     *
      * @param name the name of the parking
      * @return ResponseEntity with list of ParkingInfo with the provided name
      */

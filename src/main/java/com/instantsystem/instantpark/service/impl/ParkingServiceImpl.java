@@ -9,6 +9,7 @@ import com.instantsystem.instantpark.util.LoggingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -32,9 +33,11 @@ public class ParkingServiceImpl implements ParkingService {
 
     /**
      * Fetches all the parkings from the remote API
+     *
      * @return list of all ParkingInfo
      */
     @Override
+    @Cacheable("parkings")
     public List<ParkingInfo> getAllParkings() {
         ResponseEntity<ParkingInfoDTO> response = restTemplate.getForEntity(parkingInfoApiUrl, ParkingInfoDTO.class);
         return Objects.requireNonNull(response.getBody()).getRecords().stream()
@@ -44,10 +47,12 @@ public class ParkingServiceImpl implements ParkingService {
 
     /**
      * Retrieves a specific parking information by its id
+     *
      * @param parkingId the id of the parking
      * @return ParkingInfo for the requested parking id
      */
     @Override
+    @Cacheable(value = "parking", key = "#parkingId")
     public ParkingInfo getParkingById(String parkingId) {
         log.info(LoggingUtils.getMessage(parkingId));
         List<ParkingInfo> parkingInfos = getAllParkings();
@@ -59,7 +64,8 @@ public class ParkingServiceImpl implements ParkingService {
 
     /**
      * Retrieves nearby available parkings based on the provided latitude and longitude
-     * @param latitude the latitude of the current location
+     *
+     * @param latitude  the latitude of the current location
      * @param longitude the longitude of the current location
      * @return list of nearby ParkingInfo
      */
@@ -87,10 +93,12 @@ public class ParkingServiceImpl implements ParkingService {
 
     /**
      * Retrieves parkings by their names
+     *
      * @param name the name of the parking
      * @return list of ParkingInfo with the provided name
      */
     @Override
+    @Cacheable(value = "parkings", key = "#name")
     public List<ParkingInfo> getParkingsByName(String name) {
         log.info(LoggingUtils.getMessage(name));
         List<ParkingInfo> parkingInfos = getAllParkings();

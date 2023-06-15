@@ -50,7 +50,4 @@ Ce projet peut être conteneurisé en utilisant Docker. Le Dockerfile est fourni
 ## Temps passé
 L’ensemble du projet, de la conception aux essais et à la documentation, a pris environ 5 heures.
 
-Veuillez consulter le code pour plus de détails. ## Temps passé
-L’ensemble du projet, de la conception aux essais et à la documentation, a pris environ 5 heures.
-
-Veuillez consulter le code pour plus de détails. Toute rétroaction ou suggestion d’amélioration est la bienvenue.
+Veuillez consulter le code pour plus de détails. N'hésitez pas à me faire part de vos commentaires ou suggestions d'amélioration.

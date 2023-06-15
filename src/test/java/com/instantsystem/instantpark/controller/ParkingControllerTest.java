@@ -25,6 +25,7 @@ import static org.mockito.Mockito.doReturn;
 @WebMvcTest(ParkingController.class)
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
+@DisplayName("ParkingController_should")
 class ParkingControllerTest {
     private final String PREFIX_PATH = "/api/v1/parkings";
     @Autowired

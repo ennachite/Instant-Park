@@ -30,6 +30,10 @@ public class ParkingServiceImpl implements ParkingService {
     @Value("${parking.api.available}")
     private String parkingAvailabilityApiUrl;
 
+    /**
+     * Fetches all the parkings from the remote API
+     * @return list of all ParkingInfo
+     */
     @Override
     public List<ParkingInfo> getAllParkings() {
         ResponseEntity<ParkingInfoDTO> response = restTemplate.getForEntity(parkingInfoApiUrl, ParkingInfoDTO.class);
@@ -38,6 +42,11 @@ public class ParkingServiceImpl implements ParkingService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a specific parking information by its id
+     * @param parkingId the id of the parking
+     * @return ParkingInfo for the requested parking id
+     */
     @Override
     public ParkingInfo getParkingById(String parkingId) {
         log.info(LoggingUtils.getMessage(parkingId));
@@ -48,13 +57,18 @@ public class ParkingServiceImpl implements ParkingService {
                 .orElseThrow(() -> new ParkingDataException("Parking not found"));
     }
 
+    /**
+     * Retrieves nearby available parkings based on the provided latitude and longitude
+     * @param latitude the latitude of the current location
+     * @param longitude the longitude of the current location
+     * @return list of nearby ParkingInfo
+     */
     @Override
     public List<ParkingInfo> getNearbyParkings(Double latitude, Double longitude) {
         log.info(LoggingUtils.getMessage(latitude, longitude));
         List<ParkingInfo> parkingInfos = getAllParkings();
         List<ParkingAvailability> parkingAvailabilities = getAllParkingsAvailabilities();
 
-//        Use a TreeMap to maintain the order of the parkings by their distance to the user
         TreeMap<Double, ParkingInfo> parkingInfoByDistance = new TreeMap<>();
 
         for (ParkingInfo parkingInfo : parkingInfos) {
@@ -62,7 +76,6 @@ public class ParkingServiceImpl implements ParkingService {
             Double parkingLongitude = parkingInfo.getGeoPoint2D()[1];
             Double distance = calculateDistance(latitude, longitude, parkingLatitude, parkingLongitude);
 
-//            Add only if the parking is available
             if (isParkingAvailable(parkingInfo.getParkingName(), parkingAvailabilities)) {
                 parkingInfo.setDistance(distance * 1000);
                 parkingInfoByDistance.put(distance, parkingInfo);
@@ -72,6 +85,11 @@ public class ParkingServiceImpl implements ParkingService {
         return new ArrayList<>(parkingInfoByDistance.values());
     }
 
+    /**
+     * Retrieves parkings by their names
+     * @param name the name of the parking
+     * @return list of ParkingInfo with the provided name
+     */
     @Override
     public List<ParkingInfo> getParkingsByName(String name) {
         log.info(LoggingUtils.getMessage(name));
@@ -81,40 +99,18 @@ public class ParkingServiceImpl implements ParkingService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public ParkingAvailability getParkingAvailability(String parkingName) {
-        log.info(LoggingUtils.getMessage(parkingName));
-        ResponseEntity<ParkingAvailabilityDTO> response = restTemplate.getForEntity(parkingAvailabilityApiUrl, ParkingAvailabilityDTO.class);
-
-        AvailabilityParkingFieldsDTO fields = Objects.requireNonNull(response.getBody()).getRecords().stream()
-                .map(AvailabilityRecordDTO::getFields)
-                .filter(f -> f.getParkingName().equals(parkingName))
-                .findFirst()
-                .orElseThrow(() -> new ParkingDataException("Parking availability not found"));
-
-        return convertToParkingAvailability(fields);
-    }
-
     private boolean isParkingAvailable(String parkingName, List<ParkingAvailability> parkingAvailabilities) {
-//        check if the parking is available and availableSpots != capacity
         return parkingAvailabilities.stream()
                 .anyMatch(parkingAvailability -> parkingAvailability.getParkingName().equals(parkingName)
                         && !Objects.equals(parkingAvailability.getAvailableSpots(), parkingAvailability.getCapacity()));
-
     }
 
     private Double calculateDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
-        // The radius of the earth in kilometers
         final int EARTH_RADIUS = 6371;
 
-        // Convert degrees to radians
         double latDistance = Math.toRadians(latitude2 - latitude1);
         double lonDistance = Math.toRadians(longitude2 - longitude1);
 
-        // Haversine formula
-//        a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2)
-//        c = 2 ⋅ atan2( √a, √(1−a) )
-//        d = R ⋅ c
         double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
                 + Math.cos(Math.toRadians(latitude1)) * Math.cos(Math.toRadians(latitude2))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);

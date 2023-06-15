@@ -1,7 +1,12 @@
 # Parking API Project
 
 ## Introduction
-Ce projet expose un ensemble d’API qui interagissent avec un système de parking. Les API fournissent diverses capacités comme obtenir toutes les informations de stationnement, récupérer les détails de stationnement par ID, recherche de stationnement par nom, et obtenir un stationnement à proximité en fonction des coordonnées géographiques.
+Ce projet expose un ensemble d’API qui interagissent avec un système de parking. Les API fournissent diverses fonctionnalités ( jatni fonctionnalité hsen la?) à savoir :
+- Obtenir toutes les informations de stationnement
+- Récupérer les détails de stationnement par ID
+- Rechercher les stationnemens par nom
+- Obtenir un stationnement à proximité en fonction des coordonnées géographiques.
+
 Le projet est construit en utilisant Java 11 et Spring Boot 2.7.10 et utilise les annotations de cache de Spring Boot pour optimiser les temps de réponse des API en stockant les résultats des appels de méthode coûteux et en les réutilisant lorsque les mêmes appels sont effectués.
 
 ## Technologies utilisées
@@ -12,7 +17,7 @@ Le projet est construit en utilisant Java 11 et Spring Boot 2.7.10 et utilise le
 - Maven
 - Docker
 
-Nous avons choisi d’utiliser RestTemplate parce que c’est un client HTTP synchrone qui offre un moyen pratique de consommer des services web. Il simplifie la communication avec les serveurs HTTP et applique les principes RESTful. Il fournit des fonctionnalités puissantes telles que la gestion automatique des erreurs, les convertisseurs de messages pour convertir les messages HTTP, binding to typed beans, etc.
+J'ai choisi d’utiliser RestTemplate parce que c’est un client HTTP synchrone qui offre un moyen pratique de consommer des services web. Il simplifie la communication avec les serveurs HTTP et applique les principes RESTful. Il fournit des fonctionnalités puissantes telles que la gestion automatique des erreurs, les convertisseurs de messages pour convertir les messages HTTP, binding to typed beans, etc.
 
 ## Endpoints
 Voici les endpoints fournis par l’API Parking:
@@ -26,7 +31,7 @@ Voici les endpoints fournis par l’API Parking:
 
 2. `ParkingAvailability` : Ce modèle représente la disponibilité du stationnement. Il comprend des détails comme le nom du stationnement, les places disponibles, le taux d’occupation, la capacité, les coordonnées géographiques et l’heure de la dernière mise à jour.
 
-## Calculation de distance
+## Calcul de distance
 Pour l’extrémité "nearby", la distance entre l’emplacement de l’utilisateur et les parkings est calculée à l’aide de la formule Haversine. Cette formule calcule la plus courte distance entre deux points sur la surface d’une sphère. Cependant, pour les applications du monde réel, des résultats plus précis peuvent être obtenus en utilisant des API comme l’API Google Maps Distance Matrix.
 
 Voici la formule Haversine utilisée :

@@ -36,8 +36,8 @@ Pour l’extrémité "nearby", la distance entre l’emplacement de l’utilisat
 
 Voici la formule Haversine utilisée :
 
-```math
-a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2)
+```
+a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2);
 c = 2 ⋅ atan2( √a, √(1−a) )
 d = R ⋅ c
 ```

@@ -1,7 +1,7 @@
 # Parking API Project
 
 ## Introduction
-Ce projet expose un ensemble d’API qui interagissent avec un système de parking. Les API fournissent diverses fonctionnalités ( jatni fonctionnalité hsen la?) à savoir :
+Ce projet expose un ensemble d’API qui interagissent avec un système de parking. Les API fournissent diverses fonctionnalités à savoir :
 - Obtenir toutes les informations de stationnement
 - Récupérer les détails de stationnement par ID
 - Rechercher les stationnemens par nom
